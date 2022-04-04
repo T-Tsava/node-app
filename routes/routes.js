@@ -5,36 +5,33 @@ const Controller = require('../controller/tasksController');
 const router = express.Router();
 
 // POST Method
-router.post('/post',
+router.post('/tasks',
 Controller.validate('createTask'),
 Controller.postTask);
 
 // Get All Method
-router.get('/getall', Controller.getAllTasks);
+router.get('/tasks', Controller.getAllTasks);
 //Get by ID Method
-router.get('/getone/:id', Controller.getOneTask);
+router.get('/tasks/:id', Controller.getOneTask);
 
 //Get by Name Method
-router.get('/getbyname/:taskName', Controller.getTaskByName);
+router.get('/task/:taskName', Controller.getTaskByName);
 
 //Update by ID Method
-router.patch('/update/:id',
+router.patch('/tasks/:id',
 Controller.validate('updatebyid'),
 Controller.updateTaskById);
 
 //Delete by ID Method
-router.delete('/delete/:id', Controller.deleteTaskById);
+router.delete('/tasks/:id', Controller.deleteTaskById);
 
 //Delete Completed
-router.delete('/deletecompleted/', Controller.removeCompleted);
+router.delete('/tasks/', Controller.removeCompleted);
 
-//Get Completed Tasks
-router.get('/filterTasks/:filter', Controller.getFiltered);
-
-//add router for filtering the tasks by status
-router.get('/getByStatus', Controller.getByStatus);
+//Filter Tasks
+router.get('/tasks/filter/:filter', Controller.getFiltered);
 
 //Mark all tasks as completed
-router.patch('/markAll/', Controller.markAllCompleted);
+router.patch('/tasks/mark/', Controller.markAllCompleted);
 
 module.exports = router;
