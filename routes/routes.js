@@ -4,6 +4,11 @@ const Controller = require('../controller/tasksController');
 
 const router = express.Router();
 
+//follow REST API conventions
+//A resource can be a singleton or a collection. Use nouns to represent resources
+//For example, “tasks” is a collection resource and “task” is a singleton resource.
+// review: https://restfulapi.net/resource-naming/
+
 // POST Method
 router.post('/post', Controller.postTask);
 
