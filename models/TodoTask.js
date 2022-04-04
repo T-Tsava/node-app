@@ -29,5 +29,7 @@ const todoTaskSchema = new mongoose.Schema({
         default: false,
 
     }
+
+	//ADD ONE MORE COLUMN FOR "all", "active", "completed" TASKS
 });
 module.exports = mongoose.model('TodoTask',todoTaskSchema);

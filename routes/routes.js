@@ -21,4 +21,8 @@ router.patch('/update/:id', Controller.updateTaskById);
 //Delete by ID Method
 router.delete('/delete/:id', Controller.deleteTaskById);
 
+//add router for completedTask
+//add router for filtering the tasks by status
+//add router for mark all tasks as completed
+
 module.exports = router;

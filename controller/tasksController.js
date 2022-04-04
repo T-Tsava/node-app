@@ -1,6 +1,15 @@
 const express = require('express');
 const Model = require('../models/TodoTask');
 // POST Method
+
+//create validation function where you should have two arguments set: parameters that should be allowed and request.
+//During the certain method call the validation should be passed before db modifications.
+// It should check if the request includes the parameter that will be defined in methods.
+
+
+// IF THE METHOD DON'T PASSES THE VALIDATION DESCRIBED ABOVE, YOU MUST SEND BAD REQUEST STATUS WITH MESSAGE
+//(USE IT IN EVERY METHOD WHERE YOU THINK IT SHOULD BE REQUIRED)
+
 exports.postTask = async (req, res) => {
     const data = new Model({
         taskName: req.body.taskName
@@ -56,7 +65,7 @@ exports.getTaskByName = async (req, res) => {
 //Update by ID Method
 exports.updateTaskById = async (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.params.id; // use destructurisation
         const updatedData = req.body;
         const options = { new : true};
 
