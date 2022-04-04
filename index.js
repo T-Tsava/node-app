@@ -1,15 +1,16 @@
 require('dotenv').config();
 const express = require('express');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const routes = require('./routes/routes');
 
-//connection to db  
+//connection to db
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
     app.listen(3000, () => console.log("Server Up and running"));
 });
 const database = mongoose.connection;
 
-database.on('error', (error) => {
+database.on('error', (error) =>{
     console.log(error);
 })
 
@@ -18,5 +19,6 @@ database.once('connected', () => {
 });
 
 const app = express();
+app.use(bodyParser.json())
 app.use(express.json());
 app.use('/api', routes);

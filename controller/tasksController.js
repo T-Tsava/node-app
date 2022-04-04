@@ -1,6 +1,7 @@
 const express = require('express');
 const Model = require('../models/TodoTask');
-// POST Method
+const {query, body, validationResult } = require('express-validator')
+const validation = require('../validation');
 
 //create validation function where you should have two arguments set: parameters that should be allowed and request.
 //During the certain method call the validation should be passed before db modifications.
@@ -10,62 +11,104 @@ const Model = require('../models/TodoTask');
 // IF THE METHOD DON'T PASSES THE VALIDATION DESCRIBED ABOVE, YOU MUST SEND BAD REQUEST STATUS WITH MESSAGE
 //(USE IT IN EVERY METHOD WHERE YOU THINK IT SHOULD BE REQUIRED)
 
-exports.postTask = async (req, res) => {
-    const data = new Model({
-        taskName: req.body.taskName
-    });
+exports.validate = (method) => {
+    switch (method) {
+        case 'createTask' : {
+            return [
+                body('taskName', 'Task Name is not String').isString(),
+                body('taskName', 'Task Name is not defined').exists(),
+            ]
+      }
+        case 'updatebyid' : {
+            return [
+                body('taskName', 'Task Name is not String').isString(),
+                body('taskName', 'Task Name is not defined').exists()
+            ]
+        }
+    }
+}
 
+// POST Method
+exports.postTask = async (req, res) => {
     try{
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+            return;
+          }
+        const data = new Model({
+            taskName: req.body.taskName
+        });
+
         const dataToSave = data.save();
-        res.status(200).json(dataToSave)
+        res.status(200).json(dataToSave);
     }
     catch(error){
-        res.status(400).json({message: error.message})
-    }
+        res.status(400).json({message: error.message});
+    };
 };
 
 // Get All Method
 exports.getAllTasks = async (req, res) => {
     try{
         const data = await Model.find();
-        res.json(data)
+        res.json(data);
     }
     catch(error){
-        res.status(500).json({message: error.message})
+        res.status(500).json({message: error.message});
     }
 };
 //Get by ID Method
 exports.getOneTask = async(req, res) => {
     try {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+            return;
+          }
+
         const data = await Model.findById(req.params.id);
         res.json(data);
+
+
     }catch(error){
-        res.status(500).json({message: error.message})
+        res.status(500).json({message: error.message});
     }
 };
 
 //Get by Name Method
-exports.getTaskByName = async (req, res) => { 
+exports.getTaskByName = async (req, res) => {
     try{
-        const {taskName} = req.params
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+            return;
+          }
+        const {taskName} = req.params;
         const data = await Model.find();
-        
-        
-        //const responseTemp = res.json(data);
-        const task = data.filter(task => taskName == task.taskName)
 
-         res.send(task)
-
+        const task = data.filter(task => taskName == task.taskName);
+        res.send(task);
     }
     catch(error){
-        res.status(500).json({message: error.message})
+        res.status(500).json({message: error.message});
     }
 };
 
 //Update by ID Method
 exports.updateTaskById = async (req, res) => {
     try {
-        const id = req.params.id; // use destructurisation
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+            return;
+          }
+
+        const {id} = req.params;
         const updatedData = req.body;
         const options = { new : true};
 
@@ -75,18 +118,88 @@ exports.updateTaskById = async (req, res) => {
 
         res.send(result);
     }catch (error) {
-        res.status(400).json({ message : error.message})
+        res.status(400).json({ message : error.message});
     }
 };
 
 //Delete by ID Method
 exports.deleteTaskById =  async (req, res) => {
     try {
-        const id = req.params.id;
-        const data = await Model.findByIdAndDelete(id)
-        res.send(`Document with ${data.name} has been deleted..`)
+        const {id} = req.params;
+        const data = await Model.findByIdAndDelete(id);
+        res.send(`Document with ${data.name} has been deleted..`);
     }
     catch (error) {
-        res.status(400).json({ message: error.message })
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// Get Completed
+exports.getFiltered = async (req, res) => {
+    try{
+        const {filter} = req.params;
+        const data = await Model.find();
+
+        if(filter == 'active'){
+            const task = data.filter(task => false == task.completed);
+            res.send(task);
+        }else if(filter == 'completed'){
+            const task = data.filter(task => true == task.completed);
+            res.send(task);
+        }else {
+            res.send(data);
+        }
+    }
+    catch(error){
+        res.status(500).json({message: error.message});
+    }
+};
+
+exports.getByStatus = async (req, res) => {
+    try{
+        const data = await Model.find();
+
+        const task = data.filter(task => true == task.status);
+
+        res.send(task);
+    }
+    catch(error){
+        res.status(500).json({message: error.message});
+    }
+};
+
+exports.markAllCompleted = async (req, res) => {
+    try {
+        const data = await Model.find();
+
+        const task = data.filter(task => true == task.completed);
+
+        if(data.length != task.length){
+            let options = { completed : true};
+            const result = await Model.updateMany(
+                options
+            )
+            res.send(result);
+        }else {
+            let options = { completed : false};
+            const result = await Model.updateMany(
+                options
+            )
+            res.send(result);
+        }
+    }catch (error) {
+        res.status(400).json({ message : error.message});
+    }
+};
+
+exports.removeCompleted = async (req, res) => {
+    try {
+        let options = { completed : true};
+        const result = await Model.deleteMany(
+            options
+        )
+        res.send(result);
+    }catch (error) {
+        res.status(400).json({ message : error.message});
     }
 };
