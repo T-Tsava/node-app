@@ -25,7 +25,7 @@ exports.postTask = async (req, res) => {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            res.status(422).json({ errors: errors.array() });
+            res.status(400).json({ errors: errors.array() });
             return;
           }
         const data = new Model({
@@ -58,7 +58,7 @@ exports.getOneTask = async(req, res) => {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            res.status(422).json({ errors: errors.array() });
+            res.status(400).json({ errors: errors.array() });
             return;
           }
 
@@ -82,7 +82,7 @@ exports.getTaskByName = async (req, res) => {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            res.status(422).json({ errors: errors.array() });
+            res.status(400).json({ errors: errors.array() });
             return;
           }
         const {taskName} = req.params;
@@ -90,7 +90,7 @@ exports.getTaskByName = async (req, res) => {
 
         const task = data.filter(task => taskName == task.taskName);
 
-        if(task.length < 1){
+        if(!task.length){
             res.status(404);
             res.send({
                 code: 404,
@@ -111,7 +111,7 @@ exports.updateTaskById = async (req, res) => {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            res.status(422).json({ errors: errors.array() });
+            res.status(400).json({ errors: errors.array() });
             return;
         };
 
@@ -186,16 +186,12 @@ exports.markAllCompleted = async (req, res) => {
 
         if(data.length != taskTrue.length){
             let options = { completed : true};
-            const result = await Model.updateMany(
-                options
-            );
+            await Model.updateMany(options);
             res.send(taskFalse);
 
         }else {
             let options = { completed : false};
-            const result = await Model.updateMany(
-                options
-            );
+            await Model.updateMany(options);
             res.send(taskTrue);
         }
     }catch (error) {
@@ -211,9 +207,7 @@ exports.removeCompleted = async (req, res) => {
         const taskTrue = data.filter(task => true == task.completed);
 
         let options = { completed : true};
-        const result = await Model.deleteMany(
-            options
-        );
+        await Model.deleteMany(options);
         res.send(taskTrue);
     }catch (error) {
         res.status(400).json({ message : error.message });
