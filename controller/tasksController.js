@@ -1,15 +1,6 @@
 const express = require('express');
 const Model = require('../models/TodoTask');
-const {query, body, validationResult } = require('express-validator')
-const validation = require('../validation');
-
-//create validation function where you should have two arguments set: parameters that should be allowed and request.
-//During the certain method call the validation should be passed before db modifications.
-// It should check if the request includes the parameter that will be defined in methods.
-
-
-// IF THE METHOD DON'T PASSES THE VALIDATION DESCRIBED ABOVE, YOU MUST SEND BAD REQUEST STATUS WITH MESSAGE
-//(USE IT IN EVERY METHOD WHERE YOU THINK IT SHOULD BE REQUIRED)
+const {body, validationResult } = require('express-validator');
 
 exports.validate = (method) => {
     switch (method) {
@@ -17,16 +8,16 @@ exports.validate = (method) => {
             return [
                 body('taskName', 'Task Name is not String').isString(),
                 body('taskName', 'Task Name is not defined').exists(),
-            ]
+            ];
       }
         case 'updatebyid' : {
             return [
                 body('taskName', 'Task Name is not String').isString(),
                 body('taskName', 'Task Name is not defined').exists()
-            ]
+            ];
         }
     }
-}
+};
 
 // POST Method
 exports.postTask = async (req, res) => {
@@ -46,7 +37,7 @@ exports.postTask = async (req, res) => {
     }
     catch(error){
         res.status(400).json({message: error.message});
-    };
+    }
 };
 
 // Get All Method
@@ -106,7 +97,7 @@ exports.updateTaskById = async (req, res) => {
         if (!errors.isEmpty()) {
             res.status(422).json({ errors: errors.array() });
             return;
-          }
+        };
 
         const {id} = req.params;
         const updatedData = req.body;
@@ -114,7 +105,7 @@ exports.updateTaskById = async (req, res) => {
 
         const result = await Model.findByIdAndUpdate(
             id, updatedData, options
-        )
+        );
 
         res.send(result);
     }catch (error) {
@@ -178,13 +169,13 @@ exports.markAllCompleted = async (req, res) => {
             let options = { completed : true};
             const result = await Model.updateMany(
                 options
-            )
+            );
             res.send(result);
         }else {
             let options = { completed : false};
             const result = await Model.updateMany(
                 options
-            )
+            );
             res.send(result);
         }
     }catch (error) {
@@ -197,7 +188,7 @@ exports.removeCompleted = async (req, res) => {
         let options = { completed : true};
         const result = await Model.deleteMany(
             options
-        )
+        );
         res.send(result);
     }catch (error) {
         res.status(400).json({ message : error.message});
