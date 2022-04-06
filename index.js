@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const routes = require('./routes/routes');
 
 //connection to db
+
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
     app.listen(process.env.PORT, () => console.log("Server Up and running"));
 });

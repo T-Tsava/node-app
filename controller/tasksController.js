@@ -189,13 +189,11 @@ exports.markAllCompleted = async (req, res) => {
 
         if(data.length != taskTrue.length){
             let options = { completed : true};
-            await Model.updateMany(options);
-            let updatedData = await Model.find();
+            let updatedData = await Model.updateMany(options);
             res.send(updatedData);
         }else {
             let options = { completed : false};
-            await Model.updateMany(options);
-            let updatedData = await Model.find();
+            let updatedData = await Model.updateMany(options);
             res.send(updatedData);
         }
     }catch (error) {
