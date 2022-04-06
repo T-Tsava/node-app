@@ -2,6 +2,8 @@ const express = require('express');
 const Model = require('../models/TodoTask');
 const {body, validationResult } = require('express-validator');
 
+
+
 exports.validate = (method) => {
     switch (method) {
         case 'createTask' : {
@@ -34,7 +36,7 @@ exports.postTask = async (req, res) => {
 
         const dataToSave = data.save();
         res.send(`Task ${data} has been Added..`);
-        res.status(200).json(dataToSave);
+        //res.status(200).json(dataToSave);
     }
     catch(error){
         res.status(400).json({message: error.message});
@@ -78,6 +80,7 @@ exports.getOneTask = async(req, res) => {
 
 //Get by Name Method
 exports.getTaskByName = async (req, res) => {
+
     try{
         const errors = validationResult(req);
 
@@ -149,7 +152,7 @@ exports.deleteTaskById =  async (req, res) => {
     }
 };
 
-// Get Completed
+// Filter Tasks
 exports.getFiltered = async (req, res) => {
     try{
         const {filter} = req.params;
@@ -187,12 +190,13 @@ exports.markAllCompleted = async (req, res) => {
         if(data.length != taskTrue.length){
             let options = { completed : true};
             await Model.updateMany(options);
-            res.send(taskFalse);
-
+            let updatedData = await Model.find();
+            res.send(updatedData);
         }else {
             let options = { completed : false};
             await Model.updateMany(options);
-            res.send(taskTrue);
+            let updatedData = await Model.find();
+            res.send(updatedData);
         }
     }catch (error) {
         console.log(error)
