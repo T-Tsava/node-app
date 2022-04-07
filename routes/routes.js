@@ -10,24 +10,34 @@ const router = express.Router();
 // review: https://restfulapi.net/resource-naming/
 
 // POST Method
-router.post('/post', Controller.postTask);
+router.post('/tasks',
+Controller.validate('createTask'),
+Controller.postTask);
 
-// Get All Method
-router.get('/getall', Controller.getAllTasks);
-//Get by ID Method
-router.get('/getone/:id', Controller.getOneTask);
+// Get All Tasks
+router.get('/tasks', Controller.getAllTasks);
 
-//Get by Name Method
-router.get('/getbyname/:taskName', Controller.getTaskByName);
+//Get Task by ID
+router.get('/tasks/:id', Controller.getOneTask);
+
+//Get by Name
+router.get('/task/:taskName', Controller.getTaskByName);
 
 //Update by ID Method
-router.patch('/update/:id', Controller.updateTaskById);
+router.patch('/tasks/:id',
+Controller.validate('updatebyid'),
+Controller.updateTaskById);
 
-//Delete by ID Method
-router.delete('/delete/:id', Controller.deleteTaskById);
+//Delete by ID Method undefined
+router.delete('/tasks/:id', Controller.deleteTaskById);
 
-//add router for completedTask
-//add router for filtering the tasks by status
-//add router for mark all tasks as completed
+//Delete Completed
+router.delete('/tasks/', Controller.removeCompleted);
+
+//Filter Tasks
+router.get('/tasks/filter/:filter', Controller.getFiltered);
+
+//Mark all tasks as completed
+router.patch('/tasks/', Controller.markAllCompleted);
 
 module.exports = router;

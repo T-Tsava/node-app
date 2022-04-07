@@ -24,12 +24,13 @@ const todoTaskSchema = new mongoose.Schema({
         required:false,
         default: null
     },
-    status: {
-        type:  Boolean,
-        default: false,
-
+    completed: {
+        type: Boolean,
+        default: false
+    },
+    editing: {
+        type: Boolean,
+        default: false
     }
-
-	//ADD ONE MORE COLUMN FOR "all", "active", "completed" TASKS
 });
 module.exports = mongoose.model('TodoTask',todoTaskSchema);
