@@ -1,18 +1,30 @@
-const express = require("express");
-const app = express();
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const routes = require('./routes/routes');
 
-app.set("view engine", "ejs");
+//connection to db
 
-dotenv.config();
-
-app.use("/static", express.static("public"));
-
-app.use(express.urlencoded({ extended: true }));
-
-//connection to db  
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
-    app.listen(3000, () => console.log("Server Up and running"));
+    app.listen(process.env.PORT, () => console.log("Server Up and running"));
 });
+const database = mongoose.connection;
+
+database.on('error', (error) =>{
+    console.log(error);
+});
+
+database.once('connected', () => {
+    console.log('Database Connected');
+});
+
+const app = express();
+
+app.use(bodyParser.json());
+app.use(cors());
+app.use(express.json());
+app.use('/api', routes);
+
 
