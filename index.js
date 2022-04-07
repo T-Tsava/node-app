@@ -20,12 +20,14 @@ app.use( function(req, res, next) {
 
 app.use('/api/tasks', routes);
 
+const PORT = process.env.PORT || 4000;
 
 //connection to db
 
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
-    app.listen(process.env.PORT || 4000, () => console.log("Server Up and running"));
+    app.listen(PORT, () => console.log("Server Up and running"));
 });
+
 const database = mongoose.connection;
 
 database.on('error', (error) =>{
