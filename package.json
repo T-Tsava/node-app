@@ -28,7 +28,7 @@
     "joi": "^17.6.0",
     "lint": "^1.1.2",
     "mongodb": "^4.5.0",
-    "mongoose": "^6.2.9",
+    "mongoose": "^5.10.6",
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
