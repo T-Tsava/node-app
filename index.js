@@ -20,7 +20,7 @@ app.use( function(req, res, next) {
     return next();
 });
 
-app.use('/', routes);
+app.use('/api/tasks', routes);
 
 const PORT = process.env.PORT || 3005;
 
