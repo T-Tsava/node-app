@@ -4,7 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const routes = require('./routes/routes');
-
+console.log('im here');
 const app = express();
 
 app.use(cors());
@@ -20,7 +20,7 @@ app.use( function(req, res, next) {
 
 app.use('/api/tasks', routes);
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3005;
 
 //connection to db
 
