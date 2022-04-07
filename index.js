@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 3005;
 
 //connection to db
 
-mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, () => {
+mongoose.connect("mongodb+srv://todo_admin:J2gwSGKRkW4WhPH@to-do-app.ozgzs.mongodb.net/to-do-app?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, () => {
     app.listen(PORT, () => console.log("Server Up and running"));
 });
 
