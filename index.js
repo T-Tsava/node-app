@@ -5,6 +5,22 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const routes = require('./routes/routes');
 
+const app = express();
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.json());
+
+app.use( function(req, res, next) {
+    if (req.originalUrl && req.originalUrl.split("/").pop() === 'favicon.ico') {
+      return res.sendStatus(204);
+    }
+    return next();
+});
+
+app.use('/api/tasks', routes);
+
+
 //connection to db
 
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
@@ -20,17 +36,5 @@ database.once('connected', () => {
     console.log('Database Connected');
 });
 
-const app = express();
-
-app.use(bodyParser.json());
-app.use(cors());
-app.use(express.json());
-app.use('/api/tasks', routes);
-app.use(function(req, res, next) {
-    if (req.originalUrl && req.originalUrl.split("/").pop() === 'favicon.ico') {
-      return res.sendStatus(204);
-    }
-    return next();
-});
 
 
