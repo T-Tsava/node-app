@@ -8,7 +8,7 @@ const routes = require('./routes/routes');
 //connection to db
 
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
-    app.listen(process.env.PORT, () => console.log("Server Up and running"));
+    app.listen(process.env.PORT || 4000, () => console.log("Server Up and running"));
 });
 const database = mongoose.connection;
 
@@ -25,6 +25,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
-app.use('/api', routes);
+app.use('/api/tasks', routes);
 
 

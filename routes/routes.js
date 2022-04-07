@@ -10,34 +10,34 @@ const router = express.Router();
 // review: https://restfulapi.net/resource-naming/
 
 // POST Method
-router.post('/tasks',
+router.post('/',
 Controller.validate('createTask'),
 Controller.postTask);
 
 // Get All Tasks
-router.get('/tasks', Controller.getAllTasks);
+router.get('/', Controller.getAllTasks);
 
 //Get Task by ID
-router.get('/tasks/:id', Controller.getOneTask);
+router.get('/:id', Controller.getOneTask);
 
 //Get by Name
 router.get('/task/:taskName', Controller.getTaskByName);
 
 //Update by ID Method
-router.patch('/tasks/:id',
+router.patch('/:id',
 Controller.validate('updatebyid'),
 Controller.updateTaskById);
 
 //Delete by ID Method undefined
-router.delete('/tasks/:id', Controller.deleteTaskById);
+router.delete('/:id', Controller.deleteTaskById);
 
 //Delete Completed
-router.delete('/tasks/', Controller.removeCompleted);
+router.delete('/', Controller.removeCompleted);
 
 //Filter Tasks
-router.get('/tasks/filter/:filter', Controller.getFiltered);
+router.get('/filter/:filter', Controller.getFiltered);
 
 //Mark all tasks as completed
-router.patch('/tasks/', Controller.markAllCompleted);
+router.patch('/', Controller.markAllCompleted);
 
 module.exports = router;
