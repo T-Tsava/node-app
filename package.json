@@ -7,7 +7,7 @@
   "description": "to-do api",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "npm install && nodemon index.js",
     "lint": "eslint --fix --ext .js,.jsx ."
   },
   "keywords": [
