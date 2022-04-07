@@ -1,18 +1,22 @@
-const express = require("express");
-const app = express();
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
-
-app.set("view engine", "ejs");
-
-dotenv.config();
-
-app.use("/static", express.static("public"));
-
-app.use(express.urlencoded({ extended: true }));
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const routes = require('./routes/routes');
 
 //connection to db  
 mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
-    app.listen(3000, () => console.log("Server Up and running"));
+    app.listen(3000, () => console.log("Server Up and running")); //move port to ENV
+});
+const database = mongoose.connection;
+
+database.on('error', (error) => {
+    console.log(error);
+})
+
+database.once('connected', () => {
+    console.log('Database Connected');
 });
 
+const app = express();
+app.use(express.json());
+app.use('/api', routes);
