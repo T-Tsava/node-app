@@ -1,6 +1,9 @@
 {
   "name": "todo-api",
   "version": "1.0.0",
+  "engines": {
+    "node": "17.8.0"
+  },
   "description": "to-do api",
   "main": "index.js",
   "scripts": {
