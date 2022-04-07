@@ -11,14 +11,16 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use( function(req, res, next) {
-    if (req.originalUrl && req.originalUrl.split("/").pop() === 'favicon.ico') {
-      return res.sendStatus(204);
-    }
-    return next();
-});
+//app.use( function(req, res, next) {
+//    if (req.originalUrl && req.originalUrl.split("/").pop() === 'favicon.ico') {
+//      return res.sendStatus(204);
+//    }
+//    return next();
+//});
+app.get('/favicon.ico', (req, res) => res.status(204));
 
-app.use('/api/tasks', routes);
+//app.use('/api/tasks', routes);
+app.use('/', routes);
 
 const PORT = process.env.PORT || 4000;
 
