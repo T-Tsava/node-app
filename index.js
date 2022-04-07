@@ -22,13 +22,6 @@ database.once('connected', () => {
 
 const app = express();
 
-app.use( function(req, res, next) {
-    if (req.originalUrl && req.originalUrl.split("/").pop() === 'favicon.ico') {
-      return res.sendStatus(204);
-    }
-    return next();
-});
-
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
