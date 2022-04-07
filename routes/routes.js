@@ -9,12 +9,13 @@ router.post('/tasks',
 Controller.validate('createTask'),
 Controller.postTask);
 
-// Get All Method
+// Get All Tasks
 router.get('/tasks', Controller.getAllTasks);
-//Get by ID Method
+
+//Get Task by ID
 router.get('/tasks/:id', Controller.getOneTask);
 
-//Get by Name Method
+//Get by Name
 router.get('/task/:taskName', Controller.getTaskByName);
 
 //Update by ID Method
@@ -22,7 +23,7 @@ router.patch('/tasks/:id',
 Controller.validate('updatebyid'),
 Controller.updateTaskById);
 
-//Delete by ID Method
+//Delete by ID Method undefined
 router.delete('/tasks/:id', Controller.deleteTaskById);
 
 //Delete Completed
@@ -32,6 +33,6 @@ router.delete('/tasks/', Controller.removeCompleted);
 router.get('/tasks/filter/:filter', Controller.getFiltered);
 
 //Mark all tasks as completed
-router.patch('/tasks/mark/', Controller.markAllCompleted);
+router.patch('/tasks/', Controller.markAllCompleted);
 
 module.exports = router;

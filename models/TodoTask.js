@@ -27,6 +27,10 @@ const todoTaskSchema = new mongoose.Schema({
     completed: {
         type: Boolean,
         default: false
+    },
+    editing: {
+        type: Boolean,
+        default: false
     }
 });
 module.exports = mongoose.model('TodoTask',todoTaskSchema);
