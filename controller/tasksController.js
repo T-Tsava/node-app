@@ -187,12 +187,12 @@ exports.markAllCompleted = async (req, res) => {
 
         const taskFalse = data.filter(task => false == task.completed);
 
-        if(data.length != taskTrue.length){
-            let options = { completed : true};
+        if(data.length == taskTrue.length){
+            let options = { completed : false};
             let updatedData = await Model.updateMany(options);
             res.send(updatedData);
         }else {
-            let options = { completed : false};
+            let options = { completed : true};
             let updatedData = await Model.updateMany(options);
             res.send(updatedData);
         }
