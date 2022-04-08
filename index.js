@@ -12,8 +12,6 @@ app.get("/", cors(), (req,res) => {
 });
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
 //app.use( function(req, res, next) {
 //    if (req.originalUrl && req.originalUrl.split("/").pop() === 'favicon.ico') {
@@ -26,11 +24,11 @@ app.get('/favicon.ico', (req, res) => res.status(204));
 //app.use('/api/tasks', routes);
 app.use('/api/tasks', routes);
 
-//const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 3005;
 
 //connection to db
 
-mongoose.connect('mongodb+srv://todo_admin:J2gwSGKRkW4WhPH@to-do-app.ozgzs.mongodb.net/to-do-app?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, () => {
+mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, () => {
     app.listen(PORT, () => console.log("Server Up and running"));
 });
 
