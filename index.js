@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const routes = require('./routes/routes');
 const app = express();
 
-//app.use(cors());
+app.use(cors());
 app.get("/", cors(), (req,res) => {
     res.send("Server is successfully running");
 });
@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 app.get('/favicon.ico', (req, res) => res.status(204));
 
 //app.use('/api/tasks', routes);
-app.use('/', routes);
+app.use('/api/tasks', routes);
 
 const PORT = process.env.PORT || 3005;
 
