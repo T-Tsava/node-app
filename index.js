@@ -12,6 +12,8 @@ app.get("/", cors(), (req,res) => {
 });
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 //app.use( function(req, res, next) {
 //    if (req.originalUrl && req.originalUrl.split("/").pop() === 'favicon.ico') {
@@ -24,7 +26,7 @@ app.get('/favicon.ico', (req, res) => res.status(204));
 //app.use('/api/tasks', routes);
 app.use('/api/tasks', routes);
 
-const PORT = process.env.PORT || 3005;
+//const PORT = process.env.PORT || 3005;
 
 //connection to db
 
