@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
+
 const mongoose = require('mongoose');
 const routes = require('./routes/routes');
 const app = express();
@@ -10,8 +10,8 @@ app.use(cors());
 app.get("/", cors(), (req,res) => {
     res.send("Server is successfully running");
 });
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 //app.use( function(req, res, next) {
 //    if (req.originalUrl && req.originalUrl.split("/").pop() === 'favicon.ico') {
