@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const routes = require('./routes/routes');
+const taskRoutes = require('./routes/tasks');
+const userRoutes = require('./routes/users');
 const app = express();
 
 app.use(cors());
@@ -12,16 +13,10 @@ app.get("/", cors(), (req,res) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//app.use( function(req, res, next) {
-//    if (req.originalUrl && req.originalUrl.split("/").pop() === 'favicon.ico') {
-//      return res.sendStatus(204);
-//    }
-//    return next();
-//});
 app.get('/favicon.ico', (req, res) => res.status(204));
 
-//app.use('/api/tasks', routes);
-app.use('/api/tasks', routes);
+app.use('/api/tasks', taskRoutes);
+app.use('/api/users', userRoutes);
 
 const PORT = process.env.PORT || 3005;
 

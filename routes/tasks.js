@@ -1,6 +1,7 @@
 const express = require('express');
 const Model = require('../models/TodoTask');
 const Controller = require('../controller/tasksController');
+const UserController = require('../controller/usersController');
 
 const router = express.Router();
 
