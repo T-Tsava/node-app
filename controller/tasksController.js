@@ -1,8 +1,7 @@
 const express = require('express');
 const Model = require('../models/TodoTask');
+const UserModel = require('../models/User');
 const {body, validationResult } = require('express-validator');
-
-
 
 exports.validate = (method) => {
     switch (method) {
@@ -33,8 +32,16 @@ exports.postTask = async (req, res) => {
         const data = new Model({
             taskName: req.body.taskName
         });
+        const taskId = data.id;
+        const newTask = await data.save();
 
-        const dataToSave = data.save();
+        const updateUser = await UserModel.findByIdAndUpdate(
+            '62541c09cd0d8717c90d754e',
+            {
+                $push :{ tasks : taskId}
+            },
+            { new: true, useFindAndModify: false},
+        );
         res.send(`Task ${data} has been Added..`);
         //res.status(200).json(dataToSave);
     }
@@ -47,6 +54,7 @@ exports.postTask = async (req, res) => {
 exports.getAllTasks = async (req, res) => {
     try{
         const data = await Model.find();
+
         res.json(data);
     }
     catch(error){
@@ -141,6 +149,13 @@ exports.deleteTaskById =  async (req, res) => {
     try {
         const {id} = req.params;
         const data = await Model.findByIdAndDelete(id);
+        const updateUser = await UserModel.findByIdAndUpdate(
+            '62541c09cd0d8717c90d754e',
+            {
+                $pull :{ tasks: id}
+            },
+            { new: true, useFindAndModify: false},
+        );
         res.send(`Task ${data.taskName} has been deleted..`);
     }
     catch (error) {
