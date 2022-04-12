@@ -1,6 +1,7 @@
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const UserModel = require('../models/User');
+const {validationResult } = require('express-validator');
 
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
@@ -15,6 +16,12 @@ passport.use(
       },
       async (req,email, password, done) => {
         try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                res.status(400).json({ errors: errors.array() });
+                return;
+            }
             const data = new UserModel({
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
@@ -22,7 +29,6 @@ passport.use(
                 email: email,
                 password: password
             });
-
             data.save();
           return done(null, data);
         } catch (error) {

@@ -8,17 +8,17 @@ exports.validate = (method) => {
     switch (method) {
         case 'createUser' : {
             return [
-                body('addUser.firstName', 'firstName is not String').isString(),
-                body('addUser.firstName', 'firstName is not defined').exists(),
-                body('addUser.lastName', 'lastName is not String').isString(),
-                body('addUser.lastName', 'lastName is not defined').exists(),
-                body('addUser.email', 'email is not String').isEmail(),
-                body('addUser.email', 'email is not defined').exists(),
-                body('addUser.phone', 'phone is not String').isString(),
-                body('addUser.phone', 'phone is not defined').exists(),
-                body('addUser.password', 'phone is not String').isString(),
-                body('addUser.password', 'phone is not defined').exists(),
-                body('addUser.email').custom((value) => {
+                body('firstName', 'firstName is not String').isString(),
+                body('firstName', 'firstName is not defined').exists(),
+                body('lastName', 'lastName is not String').isString(),
+                body('lastName', 'lastName is not defined').exists(),
+                body('email', 'email is not String').isEmail(),
+                body('email', 'email is not defined').exists(),
+                body('phone', 'phone is not String').isString(),
+                body('phone', 'phone is not defined').exists(),
+                body('password', 'phone is not String').isString(),
+                body('password', 'phone is not defined').exists(),
+                body('email').custom((value) => {
                     return Model.findOne({email:value}).then(user => {
                         if(user){
                             return Promise.reject('Email Already Exists.');
@@ -33,32 +33,6 @@ exports.validate = (method) => {
                 body('firstName', 'firstName is not defined').exists()
             ];
         }
-    }
-};
-
-// POST Method
-exports.postUser = async (req, res) => {
-    try{
-        const errors = validationResult(req);
-
-        if (!errors.isEmpty()) {
-            res.status(400).json({ errors: errors.array() });
-            return;
-          }
-
-        const data = new Model({
-            firstName: req.body.addUser.firstName,
-            lastName: req.body.addUser.lastName,
-            phone: req.body.addUser.phone,
-            email: req.body.addUser.email,
-            password: req.body.addUser.password
-        });
-
-        const dataToSave = data.save();
-        res.send(`User ${data} has been Added..`);
-    }
-    catch(error){
-        res.status(400).json({message: error.message});
     }
 };
 
