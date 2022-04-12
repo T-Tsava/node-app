@@ -2,6 +2,8 @@ const Model = require('../models/User');
 const TaskModel = require('../models/TodoTask');
 const {body, validationResult } = require('express-validator');
 
+
+
 exports.validate = (method) => {
     switch (method) {
         case 'createUser' : {
@@ -87,6 +89,30 @@ exports.getOneUser = async(req, res) => {
 
 
     }catch(error){
+        res.status(404);
+        res.send({
+            code: 404,
+            message: "Not found"
+        });
+    }
+};
+
+// User Login
+exports.userLogin = async(req, res) => {
+    try {
+        const { email } = req.body.loginCredentials;
+        const { password } = req.body.loginCredentials;
+        const data = await Model.findOne({email:email,password:password});
+
+        if (!data) {
+            res.status(400).json({ errors: errors.array() });
+            return;
+          }
+        res.json(data);
+
+
+    }catch(error){
+        console.log('here');
         res.status(404);
         res.send({
             code: 404,
