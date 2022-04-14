@@ -36,7 +36,7 @@ exports.postTask = async (req, res) => {
         const newTask = await data.save();
 
         const updateUser = await UserModel.findByIdAndUpdate(
-            '62541c09cd0d8717c90d754e',
+            req.body.userid,
             {
                 $push :{ tasks : taskId}
             },
@@ -148,9 +148,10 @@ exports.updateTaskById = async (req, res) => {
 exports.deleteTaskById =  async (req, res) => {
     try {
         const {id} = req.params;
+        const {userid} = req.body;
         const data = await Model.findByIdAndDelete(id);
         const updateUser = await UserModel.findByIdAndUpdate(
-            '62541c09cd0d8717c90d754e',
+            userid,
             {
                 $pull :{ tasks: id}
             },
@@ -225,6 +226,18 @@ exports.removeCompleted = async (req, res) => {
 
         let options = { completed : true};
         await Model.deleteMany(options);
+        const {userid} = req.body;
+        taskTrue.forEach(element => {
+            const updateUser = UserModel.findByIdAndUpdate(
+                userid,
+                {
+                    $pull :{ tasks: element._id}
+                },
+                { new: true, useFindAndModify: false},
+            );
+        });
+
+
         res.send(taskTrue);
     }catch (error) {
         res.status(400).json({ message : error.message });
