@@ -1,8 +1,16 @@
 const express = require('express');
+const redis = require('redis');
 const Model = require('../models/TodoTask');
+const UserModel = require('../models/User');
 const {body, validationResult } = require('express-validator');
 
-
+const client = redis.createClient({
+    legacyMode: true
+  });
+  client.on("error", (error) => {
+   console.error(error);
+  });
+  client.connect();
 
 exports.validate = (method) => {
     switch (method) {
@@ -33,8 +41,16 @@ exports.postTask = async (req, res) => {
         const data = new Model({
             taskName: req.body.taskName
         });
-
-        const dataToSave = data.save();
+        const taskId = data.id;
+        const newTask = await data.save();
+        client.del('tasks');
+        const updateUser = await UserModel.findByIdAndUpdate(
+            req.body.userid,
+            {
+                $push :{ tasks : taskId}
+            },
+            { new: true, useFindAndModify: false},
+        );
         res.send(`Task ${data} has been Added..`);
         //res.status(200).json(dataToSave);
     }
@@ -46,8 +62,28 @@ exports.postTask = async (req, res) => {
 // Get All Method
 exports.getAllTasks = async (req, res) => {
     try{
-        const data = await Model.find();
-        res.json(data);
+        await client.get('tasks', async (err, data) => {
+            if (data) {
+                return res.status(200).send({
+                 error: false,
+                 message: `Data for tasks from the cache`,
+                 data: JSON.parse(data)
+               })
+             } else {
+                 const recipe = await Model.find();
+                 client.setex('tasks', 1020, JSON.stringify(recipe));
+                 return res.status(200).send({
+                   error: false,
+                   message: `Data for tasks from the server`,
+                   data: recipe
+                 });
+             }
+
+        })
+
+        // const data = await Model.find();
+
+        // res.json(data);
     }
     catch(error){
         res.status(500).json({message: error.message});
@@ -111,6 +147,7 @@ exports.getTaskByName = async (req, res) => {
 //Update by ID Method
 exports.updateTaskById = async (req, res) => {
     try {
+        client.del('tasks');
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -139,8 +176,17 @@ exports.updateTaskById = async (req, res) => {
 //Delete by ID Method
 exports.deleteTaskById =  async (req, res) => {
     try {
+        client.del('tasks');
         const {id} = req.params;
+        const {userid} = req.body;
         const data = await Model.findByIdAndDelete(id);
+        const updateUser = await UserModel.findByIdAndUpdate(
+            userid,
+            {
+                $pull :{ tasks: id}
+            },
+            { new: true, useFindAndModify: false},
+        );
         res.send(`Task ${data.taskName} has been deleted..`);
     }
     catch (error) {
@@ -181,6 +227,7 @@ exports.getFiltered = async (req, res) => {
 
 exports.markAllCompleted = async (req, res) => {
     try {
+        client.del('tasks');
         const data = await Model.find();
 
         const taskTrue = data.filter(task => true == task.completed);
@@ -204,12 +251,25 @@ exports.markAllCompleted = async (req, res) => {
 
 exports.removeCompleted = async (req, res) => {
     try {
+        client.del('tasks');
         const data = await Model.find();
 
         const taskTrue = data.filter(task => true == task.completed);
 
         let options = { completed : true};
         await Model.deleteMany(options);
+        const {userid} = req.body;
+        taskTrue.forEach(element => {
+            const updateUser = UserModel.findByIdAndUpdate(
+                userid,
+                {
+                    $pull :{ tasks: element._id}
+                },
+                { new: true, useFindAndModify: false},
+            );
+        });
+
+
         res.send(taskTrue);
     }catch (error) {
         res.status(400).json({ message : error.message });
