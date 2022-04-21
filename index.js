@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const redis = require('redis');
 require('./auth/auth');
 const mongoose = require('mongoose');
 const taskRoutes = require('./routes/tasks');
@@ -13,6 +14,14 @@ app.get("/", cors(), (req,res) => {
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+const client = redis.createClient({
+    legacyMode: true
+  });
+  client.on("error", (error) => {
+   console.error(error);
+  });
+  client.connect();
 
 app.get('/favicon.ico', (req, res) => res.status(204));
 
